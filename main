@@ -1,0 +1,144 @@
+--[evolve.xyz source]--
+
+--- Tables Section ---
+local rage = {
+    movement = {
+        enabled = false,
+        speed = 0
+    },
+    freezeworld = {
+        enabled = false
+    }
+}
+local misc = {
+    exploits = {
+        antifling = false,
+        antistomp = false,
+        antibag = false
+    }
+}
+local antiaim = {
+    confusion = {
+        enabled = false
+    }
+}
+
+--- Loadstring Section ---
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/farthefarter/puppywarelib/main/Okand"))()
+
+local Loader = loadstring(game:HttpGet('https://raw.githubusercontent.com/paperynnn1/hornyware/main/.gg/loader'))()
+wait(7.66) 
+
+local Window = Library:CreateWindow("evolve.xyz | Dahood | v0.01", Vector2.new(492, 598), Enum.KeyCode.RightShift)
+
+---CUSTOMIZING
+Library.theme.accentcolor = Color3.fromRGB(0,85,255)
+
+--- Rage Section ---
+local RageTab = Window:CreateTab("Rage")
+local MSection = RageTab:CreateSector("Movement", "left")
+local ESection = RageTab:CreateSector("Exploits", "left")
+local FSection = RageTab:CreateSector("Freeze World", "right")
+local F2Section = RageTab:CreateSector("Fake Lag", "right")
+
+---CFRAME
+MSection:AddToggle('Enabled', false, function(e)
+    rage.movement.enabled = e
+end)
+MSection:AddSlider("Speed Value", 0, 0, 10, 0.5, function(e)
+    rage.movement.speed = e
+end)
+
+---FREZEWORLD
+FSection:AddToggle('Enabled', false, function(e)
+    rage.freezeworld.enabled = e
+end)
+
+---FAKELAG
+F2Section:AddToggle('Enabled', false, function(e)
+    rage.fakelag.enabled = e
+end)
+
+---FLOATING
+ESection:AddToggle('Anti Fling', false, function(e)
+    misc.exploits.antifling = e
+end)
+ESection:AddToggle('Anti Stomp', false, function(e)
+   misc.exploits.antistomp = e
+end)
+ESection:AddToggle('Anti Bag', false, function(e)
+   misc.exploits.antibag = e
+end)
+
+--- Visuals Section ---
+local VisualsTab = Window:CreateTab("Visuals")
+local ESPSection = VisualsTab:CreateSector("ESP", "left")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- Table Functions ---
+game:GetService("RunService").Heartbeat:Connect(function()   
+    if rage.movement.enabled then
+        for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if v:IsA("Script") and v.Name ~= "Health" and v.Name ~= "Sound" and v:FindFirstChild("LocalScript") then
+                v:Destroy()
+            end
+        end
+        game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
+            repeat
+                wait()
+            until game.Players.LocalPlayer.Character
+            char.ChildAdded:Connect(function(child)
+                if child:IsA("Script") then 
+                    wait(0.1)
+                    if child:FindFirstChild("LocalScript") then
+                        child.LocalScript:FireServer()
+                    end
+                end
+            end)
+        end)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame =
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame +
+        game.Players.LocalPlayer.Character.Humanoid.MoveDirection * rage.movement.speed
+    end 
+    if misc.exploits.antifling == true then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+    elseif misc.exploits.antifling == false then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+    end
+    if misc.exploits.antistomp then
+        if game.Players.LocalPlayer.Character.Humanoid.Health <= 5 then
+            for i, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+                if v:IsA("BasePart") then
+                    v:Destroy()
+                end
+            end
+        end
+    end
+    if misc.exploits.antibag then
+        game.Players.LocalPlayer.Character["Christmas_Sock"]:Destroy()
+    end
+    if rage.freezeworld.enabled == true then
+        settings().Network.IncomingReplicationLag = 999999999
+    elseif rage.freezeworld.enabled == false then
+        settings().Network.IncomingReplicationLag = 0
+    end
+end)
