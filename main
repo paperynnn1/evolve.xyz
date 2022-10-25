@@ -1,55 +1,39 @@
 --[evolve.xyz source]--
-
 --- Tables Section ---
 local rage = {
     movement = {
         enabled = false,
         speed = 0
     },
-    freezeworld = {
-        enabled = false
+    gunmods = {
+        autoreload = false,
+        autoshoot = false
     }
 }
 local misc = {
     exploits = {
         antifling = false,
         antistomp = false,
-        antibag = false
-    }
-}
-local visuals = {
-    esp = {
-        box = false,
-        healthbar = false,
-        tracer = false,
-        names = false,
-        skeleton = false,
-        colours = Color3.fromRGB(0,85,255)
-    },
-    spoof = {
-        ping = false,
-        memory = false
+        antibag = false,
+        autostomp = false
     }
 }
 
 --- Loadstring Section ---
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/cat"))()
-local Loader = loadstring(game:HttpGet('https://raw.githubusercontent.com/paperynnn1/hornyware/main/.gg/loader'))()
-wait(7.99)
-local Window = Library:CreateWindow("evolve", Vector2.new(495, 595), Enum.KeyCode.RightShift)
+
+local Window = Library:CreateWindow("evovehook", Vector2.new(510, 705), Enum.KeyCode.RightShift)
 
 --- Locals Section ---
+local LegitTab = Window:CreateTab("Legit")
 local RageTab = Window:CreateTab("Rage")
 local VisualsTab = Window:CreateTab("Visuals")
 local SettingsTab = Window:CreateTab("Settings")
 
 local MSection = RageTab:CreateSector("Movement", "left")
-local ESection = RageTab:CreateSector("Exploits", "left")
-local FSection = RageTab:CreateSector("Freeze World", "right")
+local ESection = RageTab:CreateSector("Exploits", "right")
 
 local CSection = VisualsTab:CreateSector("CrossHair", "right")
-local ESPSection = VisualsTab:CreateSector("Esp", "left")
-local SPSection = VisualsTab:CreateSector("Spoofers", "left")
 
 --- Rage Section ---
 ---CFRAME
@@ -58,11 +42,6 @@ MSection:AddToggle('Enabled', false, function(e)
 end)
 MSection:AddSlider("Speed Value", 0, 0, 10, 0.5, function(e)
     rage.movement.speed = e
-end)
-
----FREZEWORLD
-FSection:AddToggle('Enabled', false, function(e)
-    rage.freezeworld.enabled = e
 end)
 
 ---FLOATING
@@ -77,26 +56,6 @@ ESection:AddToggle('Anti Bag', false, function(e)
 end)
 
 --- Visuals Section ---
----ESP
-ESPSection:AddToggle('Box', false, function(e)
-    visuals.esp.box = e
-end)
-ESPSection:AddToggle('Health', false, function(e)
-    visuals.esp.healthbar = e
-end)
-ESPSection:AddToggle('Tracers', false, function(e)
-    visuals.esp.tracer = e
-end)
-ESPSection:AddToggle('Skeleton', false, function(e)
-    visuals.esp.skeleton = e
-end)
-ESPSection:AddToggle('Names', false, function(e)
-    visuals.esp.names = e
-end)
-ESPSection:AddColorpicker('Esp Colours',Color3.fromRGB(0,85,255), function(e)
-    visuals.esp.colours = e
-end)
-
 ---CROSSHAIR
 CSection:AddToggle('Top', true, function(e)
     game:GetService("Players").LocalPlayer.PlayerGui.MainScreenGui.Aim.Top.Visible = e
@@ -109,14 +68,6 @@ CSection:AddToggle('Right', true, function(e)
 end)
 CSection:AddToggle('Left', true, function(e)
     game:GetService("Players").LocalPlayer.PlayerGui.MainScreenGui.Aim.Left.Visible = e
-end)
-
----SPOOF
-SPSection:AddToggle('Ping', false, function(e)
-    visuals.spoof.ping = e
-end)
-SPSection:AddToggle('Memory', false, function(e)
-    visuals.spoof.memory = e
 end)
 
 ---CONFIG
@@ -164,41 +115,17 @@ game:GetService("RunService").Heartbeat:Connect(function()
     if misc.exploits.antibag then
         game.Players.LocalPlayer.Character["Christmas_Sock"]:Destroy()
     end
-    if rage.freezeworld.enabled == true then
-        settings().Network.IncomingReplicationLag = 999999999
-    elseif rage.freezeworld.enabled == false then
-        settings().Network.IncomingReplicationLag = 0
+    if rage.gunmods.autoreload then
+        if game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool") then
+            if game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool"):FindFirstChild("Ammo") then
+                if game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool"):FindFirstChild("Ammo").Value <= 0 then
+                    game:GetService("ReplicatedStorage").MainEvent:FireServer("Reload", game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool")) 
+                    wait(1)
+                end
+            end
+        end
     end
-    if visuals.spoof.ping then
-        local PerformanceStats = game:GetService("CoreGui"):WaitForChild("RobloxGui"):WaitForChild("PerformanceStats");
-        local PingLabel;
-        for I, Child in next, PerformanceStats:GetChildren() do
-            if Child.StatsMiniTextPanelClass.TitleLabel.Text == "Ping" then
-                PingLabel = Child.StatsMiniTextPanelClass.ValueLabel;
-                break;
-            end;
-        end;
-        
-        local text = "30.56 ms";
-        PingLabel:GetPropertyChangedSignal("Text"):Connect(function()
-            PingLabel.Text = text;
-        end);
-        PingLabel.Text = text;
-    end
-    if visuals.spoof.memory then
-        local PerformanceStats = game:GetService("CoreGui"):WaitForChild("RobloxGui"):WaitForChild("PerformanceStats");
-        local MemLabel;
-        for I, Child in next, PerformanceStats:GetChildren() do
-            if Child.StatsMiniTextPanelClass.TitleLabel.Text == "Mem" then
-                MemLabel = Child.StatsMiniTextPanelClass.ValueLabel;
-                break;
-            end;
-        end;
-        
-        local text = "562.77 MB" ;
-        MemLabel:GetPropertyChangedSignal("Text"):Connect(function()
-            MemLabel.Text = text;
-        end);
-        MemLabel.Text = text;
+    if misc.exploits.autostomp then
+        game:GetService('ReplicatedStorage').MainEvent:FireServer('Stomp')
     end
 end)
